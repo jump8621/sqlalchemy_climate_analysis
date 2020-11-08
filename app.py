@@ -32,8 +32,8 @@ def index():
         /api/v1.0/precipitaion<br/>
         /api/v1.0/station<br/>
         /api/v1.0/tobs<br/>
-        /api/v1.0<start></br>
-        /api/v1.0<start>/<end></br>
+        /api/v1.0/<start></br>
+        /api/v1.0/<start>/<end></br>
     """
 
 @app.route("/api/v1.0/precipitation")
@@ -150,10 +150,39 @@ def tobs():
     return jsonify(tobs_dict)
 
 @app.route("/api/v1.0/<start>")
-def start(start)
+def start(start):
+    session = Session(engine)
+    try:
+        start = dt.datetime.strptime(start, "%Y-%m-%d")
+        
+    except:
+        return jsonify({"error": "Improper date format. Needs to be YYYY-MM-DD."}), 404
+        
+    
+    # results = session.query(TMIN, TAVG, TMAX).filter(Measurement.date>=start)
+    results = session.query(Measurement.date, func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
+        .group_by(Measurement.date)\
+        .filter(Measurement.date>=start).all()
+#   * Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+#   * When given the start only, calculate `TMIN`, `TAVG`, and `TMAX` for all dates greater than and equal to the start date.
+#   * When given the start and the end date, calculate the `TMIN`, `TAVG`, and `TMAX` for dates between the start and end date inclusive.
+    # print(results)
+    session.close()
+
+    temp_list = []
+
+    for i in results:
+        start = {}
+        start[i[0]] = {
+            'TMAX' : i[2],
+            'TMIN' : i[1],
+            'TAVG' : i[3]
+        }
+        temp_list.append(start)
 
 
-    return 
+    return jsonify (temp_list)
+    
 # @app.route("/api/v1.0/passengers/<id>")
 # def passenger(id):
 #     session = Session(engine)
@@ -184,12 +213,35 @@ def start(start)
 
 #     return jsonify({"error": "Character not found."}), 404
 # * `/api/v1.0/<start>` and `/api/v1.0/<start>/<end>`
+@app.route("/api/v1.0/<start>/<end>")
+def startend(start,end):
 
-#   * Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+    session = Session(engine)
+    try:
+        start = dt.datetime.strptime(start, "%Y-%m-%d")
+        end = dt.datetime.strptime(end, '%Y-%m-%d')
+    except:
+        return jsonify({"error": "Improper date format. Needs to be YYYY-MM-DD."}), 404
+        
+    
+    # results = session.query(TMIN, TAVG, TMAX).filter(Measurement.date>=start)
+    results = session.query(Measurement.date, func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
+        .filter(Measurement.date>=start).all()
+    session.close()
 
-#   * When given the start only, calculate `TMIN`, `TAVG`, and `TMAX` for all dates greater than and equal to the start date.
+    temp_list = []
 
-#   * When given the start and the end date, calculate the `TMIN`, `TAVG`, and `TMAX` for dates between the start and end date inclusive.
+    for i in results:
+        start = {}
+        start[i[0]] = {
+            'TMAX' : i[2],
+            'TMIN' : i[1],
+            'TAVG' : i[3]
+        }
+        temp_list.append(start)
+
+
+    return jsonify (temp_list)
 
 if __name__=="__main__":
     app.run(debug=True)
