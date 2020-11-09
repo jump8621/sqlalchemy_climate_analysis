@@ -8,8 +8,7 @@ import datetime as dt
 from flask import Flask, jsonify
 
 #database setup
-# connection_string = "sqlite://titanic.sqlite"
-# engine = create_engine(connection_string)
+
 engine = create_engine("sqlite:///./Resources/hawaii.sqlite")
 # , echo=False
 Base = automap_base()
@@ -58,12 +57,7 @@ def precipitaion():
         precipitation_list.append(precipitation_dict)
         
     return jsonify(precipitation_list)
-        # precipitation_dict = {}
-        # precipitation_dict["date"] = Measurement.date
-        # precipitation_dict["prcp"] = Measurement.prcp
-        # precipitation_list.append(precipitation_dict)
-
-    
+         
 
 @app.route("/api/v1.0/station")
 def station():
@@ -76,52 +70,7 @@ def station():
     station_list = list(np.ravel(stations_query))
 
     return jsonify(station_list)
-    # stations_query = session.query(Station, Station.id, Station.name, Station.station).all()
-#     results = session.query(Passenger.name).all()
-
-#     session.close()
-
-#     names = list(np.ravel(results))
     
-
-    # stations_list = []
-    # for i in stations_query:
-
-        # 'name' : Station.name
-        # stations_list['id'] : Station.id
-        # stations_list['station'] : Station.station
-        # stations_list.append(stations_list)
-
-    # return jsonify(station_list)
-# session = Session(engine)
-
-#     results = session.query(Passenger.name).all()
-
-#     session.close()
-
-#     names = list(np.ravel(results))
-
-#     return jsonify(names)
-
-# @app.route("/api.v1.0/passengers")
-# def passengers():
-#     session = Session(engine)
-
-#     results = session.query(Passenger).all
-
-#     session.close()
-
-#     passengers = []
-#     for item in results:
-#         passenger = { 
-#             'name': item.name,
-#             'age' : item.age,
-#             'sex' : item.sex
-#         }
-#         passengers.append(passenger)
-
-#     return jsonify(results)
-
 
 
 @app.route("/api/v1.0/tobs")
@@ -183,36 +132,7 @@ def start(start):
 
     return jsonify (temp_list)
     
-# @app.route("/api/v1.0/passengers/<id>")
-# def passenger(id):
-#     session = Session(engine)
 
-#     results = session.query(Passenger).filter(Passenger.id == id).first()
-
-#     session.close()
-    
-#     passenger = { 
-#         'name': item.name,
-#         'age' : item.age,
-#         'sex' : item.sex
-#         }
-        
-#     return jsonify(passenger)
-
-#     @app.route("/api/v1.0/justice-league/superhero/<superhero>")
-# def justice_league_by_superhero__name(superhero):
-#     """Fetch the Justice League character whose superhero matches
-#        the path variable supplied by the user, or a 404 if not."""
-
-#     canonicalized = superhero.replace(" ", "").lower()
-#     for character in justice_league_members:
-#         search_term = character["superhero"].replace(" ", "").lower()
-
-#         if search_term == canonicalized:
-#             return jsonify(character)
-
-#     return jsonify({"error": "Character not found."}), 404
-# * `/api/v1.0/<start>` and `/api/v1.0/<start>/<end>`
 @app.route("/api/v1.0/<start>/<end>")
 def startend(start,end):
 
@@ -224,24 +144,25 @@ def startend(start,end):
         return jsonify({"error": "Improper date format. Needs to be YYYY-MM-DD."}), 404
         
     
-    # results = session.query(TMIN, TAVG, TMAX).filter(Measurement.date>=start)
-    results = session.query(Measurement.date, func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
-        .filter(Measurement.date>=start).all()
+#     # results = session.query(TMIN, TAVG, TMAX).filter(Measurement.date>=start)
+    results = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
+        .filter(Measurement.date>=start).filter(Measurement.date<=end).all()
     session.close()
 
-    temp_list = []
-
-    for i in results:
-        start = {}
-        start[i[0]] = {
-            'TMAX' : i[2],
-            'TMIN' : i[1],
-            'TAVG' : i[3]
+    
+    sp_range_temp = []
+    for i in (results):
+        inclusive_temp_range = {}
+        inclusive_temp_range = {
+            'Temp_MIN' : i[0],
+            'Temp_MAX' : i[1],
+            'Temp_AVG' : i[2]
         }
-        temp_list.append(start)
+
+        sp_range_temp.append(inclusive_temp_range) 
 
 
-    return jsonify (temp_list)
-
+    return jsonify (sp_range_temp)
+# could just return inclusive_temp_range it comes out the same on jupyter notebook
 if __name__=="__main__":
     app.run(debug=True)
