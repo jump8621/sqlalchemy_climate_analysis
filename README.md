@@ -8,4 +8,8 @@ The start date was completed two ways in the Visual Studio;
     the 2nd way finds the Min, Max, and Avg temp for range of days from the date given(start).
 
 
-!image
+![Precipitation](Precipitation.png)
+
+![TempObservation](TempObservation.png)
+
+![Trip_Avg_Temp](Trip_Avg_Temp.png)
