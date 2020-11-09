@@ -32,6 +32,7 @@ def index():
         /api/v1.0/station<br/>
         /api/v1.0/tobs<br/>
         /api/v1.0/<start></br>
+        /api/v1.0/start2/<start></br>
         /api/v1.0/<start>/<end></br>
     """
 
@@ -108,7 +109,6 @@ def start(start):
         return jsonify({"error": "Improper date format. Needs to be YYYY-MM-DD."}), 404
         
     
-    # results = session.query(TMIN, TAVG, TMAX).filter(Measurement.date>=start)
     results = session.query(Measurement.date, func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
         .group_by(Measurement.date)\
         .filter(Measurement.date>=start).all()
@@ -123,6 +123,34 @@ def start(start):
     for i in results:
         start = {}
         start[i[0]] = {
+            'TMAX' : i[2],
+            'TMIN' : i[1],
+            'TAVG' : i[3]
+        }
+        temp_list.append(start)
+
+
+    return jsonify (temp_list)
+
+@app.route("/api/v1.0/start2/<start>")
+def start2(start):
+    session = Session(engine)
+    try:
+        start = dt.datetime.strptime(start, "%Y-%m-%d")
+        
+    except:
+        return jsonify({"error": "Improper date format. Needs to be YYYY-MM-DD."}), 404
+        
+    
+    results = session.query(Measurement.date, func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
+        .filter(Measurement.date>=start).all()
+    session.close()
+
+    temp_list = []
+
+    for i in results:
+        start = {}
+        start = {
             'TMAX' : i[2],
             'TMIN' : i[1],
             'TAVG' : i[3]
