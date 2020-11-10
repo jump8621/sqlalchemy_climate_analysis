@@ -19,8 +19,8 @@ The average temperature for Hawaii during September, 10th and 20th in 2016 was 7
 ![Trip_Avg_Temp](Trip_Avg_Temp.png)
 
 When using all the temperature data collected for Hawaii on those dates the average temp. is 76.3, only slightly lower than the 2016 data.
- Tmin.mean=68
- tmax.mean=84
+The average minimum temp. is 68 degrees and the average maximum temp. is 84 degrees.
+
 ![Predicted_Temperatures_for_trip](Predicted_Temperatures_for_Trip.png)
 
 
