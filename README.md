@@ -13,3 +13,5 @@ The start date was completed two ways in the Visual Studio;
 ![TempObservation](TempObservation.png)
 
 ![Trip_Avg_Temp](Trip_Avg_Temp.png)
+
+![Predicted_Temperatures_for_trip](Predicted_Temperatures_for_Trip.png)
