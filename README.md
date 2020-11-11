@@ -10,7 +10,7 @@ The start date was completed two ways in the Visual Studio(app.py):
 ![Precipitation](Precipitation.png)
 
 
-'USC00519281' is the most active station, according to the data, but when gathering the last 12 months of temperature observation data from the station, the lastest date on record is different than the date being used previously for the precipitation data.
+'USC00519281' is the most active station, according to the data, but when gathering the last 12 months of temperature observation data from the station, the lastest date on record is **different** than the date being used previously for the precipitation data.
 
 ![TempObservation](TempObservation.png)
 
@@ -18,11 +18,11 @@ The average temperature for Hawaii during September, 10th and 20th in 2016 was 7
 
     Min = 70 degrees
     Max  = 83 degrees
-[70.0, 77.17391304347827, 83.0]
+
 
 ![Trip_Avg_Temp](Trip_Avg_Temp.png)
 
-When using all the temperature data collected for Hawaii on those dates the average temp. is 76.3, only slightly lower than the 2016 data.
+When using all the temperature data collected for Hawaii on those dates the average temp. is 76.3, only slightly lower than the 2016 data and within the error bar used for that graph.
     The average minimum temp. is 68 degrees and the average maximum temp. is 84 degrees as shown in the table below the graph.
 
 ![Predicted_Temperatures_for_trip](Predicted_Temperatures_for_Trip.png)
